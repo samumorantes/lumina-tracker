@@ -152,6 +152,15 @@ export default function Dashboard() {
 
                     {/* 📝 Lista de Hábitos */}
                     <div className="space-y-4">
+                        <div className="flex items-center justify-between mb-2 px-2">
+                            <h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white">Mis Hábitos</h2>
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-sm flex items-center gap-2"
+                            >
+                                + Nuevo
+                            </button>
+                        </div>
                         {mappedHabits.length === 0 ? (
                             <div className="p-10 text-center text-slate-500 dark:text-slate-400 bg-white/40 dark:bg-white/5 rounded-[2rem] border border-white/60 dark:border-white/10 backdrop-blur-xl">
                                 {dict.noHabits}
@@ -348,6 +357,70 @@ export default function Dashboard() {
 
                 </div>
             </div>
+
+            {/* Modal de Agregar Hábito */}
+            {isAddModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white dark:bg-[#151B2B] w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 duration-300 border border-slate-200 dark:border-white/10">
+                        <h2 className="text-2xl font-black mb-6 text-slate-800 dark:text-white">Nuevo Hábito</h2>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">Nombre del hábito</label>
+                                <input
+                                    type="text"
+                                    value={newHabitName}
+                                    onChange={(e) => setNewHabitName(e.target.value)}
+                                    placeholder="Ej. Leer 10 páginas..."
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 dark:text-white"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">Color del Tema</label>
+                                <div className="flex gap-3">
+                                    {COLORS.map(color => (
+                                        <button
+                                            key={color}
+                                            title={`Seleccionar color ${color}`}
+                                            aria-label={`Color ${color}`}
+                                            onClick={() => setNewHabitColor(color)}
+                                            className={`w-10 h-10 rounded-full ${color} transition-all active:scale-90 ${newHabitColor === color ? 'ring-4 ring-offset-2 ring-indigo-500 dark:ring-offset-[#151B2B]' : 'opacity-50 hover:opacity-100'}`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-8">
+                            <button
+                                onClick={() => setIsAddModalOpen(false)}
+                                className="px-5 py-2.5 rounded-xl font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (newHabitName.trim()) {
+                                        addHabit({
+                                            name: newHabitName.trim(),
+                                            frequency: 'daily',
+                                            categoryColor: newHabitColor
+                                        });
+                                        setNewHabitName('');
+                                        setIsAddModalOpen(false);
+                                    }
+                                }}
+                                disabled={!newHabitName.trim()}
+                                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
+                            >
+                                Crear Hábito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
