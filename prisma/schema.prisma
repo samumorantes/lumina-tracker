@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String    @unique
+  passwordHash  String
+  globalXp      Int       @default(0)
+  levelTitle    String    @default("NPC Base 😐") // Ajustado a la jerga Meme V5
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  habits        Habit[]
+  
+  // Amigos
+  sentRequests     Friendship[] @relation("SentRequests")
+  receivedRequests Friendship[] @relation("ReceivedRequests")
+}
+
+model Habit {
+  id            String     @id @default(cuid())
+  name          String
+  frequency     String     @default("daily")
+  categoryColor String     @default("bg-indigo-500")
+  createdAt     DateTime   @default(now())
+  
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  logs          HabitLog[]
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  dateStr   String   // Formato "yyyy-MM-dd"
+  
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, dateStr])
+}
+
+model Friendship {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  receiverId  String
+  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  status      String   @default("PENDING") // Puede ser PENDING o ACCEPTED
+  createdAt   DateTime @default(now())
+
+  @@unique([senderId, receiverId])
+}
