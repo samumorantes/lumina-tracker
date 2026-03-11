@@ -18,6 +18,7 @@ export const dictionaries = {
             welcomeTitle: "¡Hola! ¿Cómo te llamas?",
             welcomeDesc: "Ingresa tu nombre para comenzar a trackear y subir de nivel.",
             welcomeBtn: "Comenzar",
+            logout: "Cerrar sesión"
         },
         nav: {
             today: "Hoy",
@@ -52,20 +53,21 @@ export const dictionaries = {
         dashboard: {
             title: "Vos Progrès en un coup d'œil",
             subtitle: "Continuez à construire votre meilleure version aujourd'hui. ✨",
-            noHabits: "Vous n'avez pas configuré d'habitudes.",
+            noHabits: "Vous n'avez pas d'habitudes configurées.",
             completedTitle: "Marquer comme terminé",
             streakDays: "jours consécutifs",
             streakBadge: "Série!",
-            weeklyTrend: "Tendance de Réussite Quotidienne (%)",
+            weeklyTrend: "Tendance Quotidienne de Réussite (%)",
             productivity: "Productivité",
-            globalSuccess: "Réussite Mensuelle Globale",
+            globalSuccess: "Réussite Globale du Mois",
             monthCurrent: "Mois",
             coachCardTitle: "Votre Coach IA",
-            coachCardDesc: "Obtenez des commentaires personnalisés sur vos progrès avec des algorithmes avancés.",
-            coachCardBtn: "Aller au Coach",
-            welcomeTitle: "Bonjour! Comment tu t'appelles?",
-            welcomeDesc: "Entrez votre nom pour commencer à suivre et monter de niveau.",
+            coachCardDesc: "Obtenez des conseils personnalisés sur vos progrès avec des algorithmes avancés.",
+            coachCardBtn: "Consulter le Coach",
+            welcomeTitle: "Bonjour ! Comment vous appelez-vous ?",
+            welcomeDesc: "Entrez votre nom pour commencer à suivre vos habitudes et monter de niveau.",
             welcomeBtn: "Commencer",
+            logout: "Déconnexion"
         },
         nav: {
             today: "Auj.",
@@ -75,15 +77,15 @@ export const dictionaries = {
         },
         coach: {
             title: "Coach Intelligent",
-            subtitle: "Analyse des modèles basée sur l'IA.",
-            readyTitle: "Prêt à vérifier vos métriques ?",
-            readyDesc: "J'enverrai un rapport de vos séries au LLM pour trouver des modèles cachés dans votre routine.",
-            btnLoading: "Analyse des modèles...",
+            subtitle: "Analyse des comportements basée sur l'IA.",
+            readyTitle: "Prêt à évaluer vos indicateurs ?",
+            readyDesc: "J'enverrai un rapport de vos séries à notre modèle IA pour déceler des modèles cachés dans votre routine.",
+            btnLoading: "Analyse en cours...",
             btnGenerate: "Générer un Plan d'Action"
         },
         stats: {
             title: "Analyses par Habitude",
-            subtitle: "Décomposez votre cohérence (Mode GitHub).",
+            subtitle: "Détaillez votre régularité (Style GitHub).",
             noHabits: "Pas encore d'habitudes. Retournez à l'accueil pour en ajouter.",
             freqDaily: "Objectif Quotidien",
             freqWeekly: "Objectif Hebdomadaire",
@@ -91,7 +93,7 @@ export const dictionaries = {
             bestStreak: "Meilleure Série",
             totalDays: "Jours Totaux",
             retention: "Rétention",
-            calendarTotal: "jours marqués pendant cette période",
+            calendarTotal: "jours complétés sur cette période",
             calendarLess: "Moins",
             calendarMore: "Plus",
         }

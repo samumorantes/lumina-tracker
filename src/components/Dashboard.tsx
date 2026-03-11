@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { BarChart, Bar, AreaChart, Area, XAxis, PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useSession, signOut } from 'next-auth/react';
+import { BarChart, Bar, AreaChart, Area, XAxis, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
 import { useHabitStore } from '@/store/useHabitStore';
 import { calculateStreaks, calculateMonthlyGlobalProgress, calculateDailySuccessPercentage } from '@/lib/habit-stats';
 import { getDictionary } from '@/lib/i18n';
 import { format, subDays } from 'date-fns';
 import { es, fr } from 'date-fns/locale';
 import Link from 'next/link';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, LogOut } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 // Placeholder for COLORS, assuming it's an array of color strings
@@ -131,7 +131,7 @@ export default function Dashboard() {
         <div className="min-h-[calc(100vh-4rem)] p-6 md:p-12 font-sans text-slate-800 dark:text-slate-200">
 
             {/* 🌟 HEADER */}
-            <header className="mb-10 pt-4 md:pt-0">
+            <header className="mb-10 pt-4 md:pt-0 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 transition-colors duration-500">
                         {dict.title}, {session?.user?.name || (session?.user as any)?.username || 'Viajero'}
@@ -141,6 +141,16 @@ export default function Dashboard() {
                         {dict.subtitle}
                     </p>
                 </div>
+                <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white/40 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-all text-slate-500 dark:text-slate-400 hover:text-red-500 shadow-sm"
+                    title={dict.logout || "Cerrar sesión"}
+                >
+                    <LogOut size={24} />
+                    <span className="text-[10px] uppercase font-bold mt-1 tracking-wider hidden md:block">
+                        {dict.logout || "Cerrar sesión"}
+                    </span>
+                </button>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -222,13 +232,14 @@ export default function Dashboard() {
                         <h3 className="text-xl font-bold mb-6 text-slate-800 dark:text-slate-100">{dict.weeklyTrend}</h3>
                         <div className="h-64 w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={weeklyData} barSize={30}>
+                                <AreaChart data={weeklyData}>
                                     <defs>
-                                        <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#8b5cf6" stopOpacity={1} />
-                                            <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                                        <linearGradient id="colorSuccessClassic" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1} />
                                         </linearGradient>
                                     </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(139, 92, 246, 0.15)" />
                                     <XAxis
                                         dataKey="name"
                                         stroke="transparent"
@@ -238,54 +249,54 @@ export default function Dashboard() {
                                         dy={10}
                                     />
                                     <Tooltip
-                                        cursor={{ fill: 'rgba(139, 92, 246, 0.1)' }}
+                                        cursor={{ stroke: 'rgba(139, 92, 246, 0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
                                         contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(11, 15, 25, 0.8)', backdropFilter: 'blur(10px)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
                                         itemStyle={{ color: '#a78bfa', fontWeight: 'bold' }}
                                         labelStyle={{ color: '#cbd5e1' }}
                                         formatter={(value: any) => [`${value}%`, dict.productivity]}
                                     />
-                                    <Bar
+                                    <Area
+                                        type="monotone"
                                         dataKey="success"
-                                        fill="url(#colorSuccess)"
-                                        radius={[8, 8, 8, 8]}
+                                        stroke="#8b5cf6"
+                                        strokeWidth={4}
+                                        fillOpacity={1}
+                                        fill="url(#colorSuccessClassic)"
+                                        activeDot={{ r: 8, strokeWidth: 0, fill: '#7c3aed', style: { filter: 'drop-shadow(0px 4px 6px rgba(139, 92, 246, 0.4))' } }}
                                     />
-                                </BarChart>
+                                </AreaChart>
                             </ResponsiveContainer>
                         </div>
 
-                        {/* 🔽 VISTA CLÁSICA DESPLEGABLE (AreaChart) */}
+                        {/* 🔽 VISTA DESPLEGABLE DE BARRAS (BarChart) */}
                         <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/10">
                             <details className="group">
                                 <summary className="cursor-pointer flex items-center justify-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 transition-colors">
-                                    <span>{language === 'fr' ? 'Afficher la Tendance Classique (Ondes)' : 'Mostrar Tendencia Clásica (Olas)'}</span>
+                                    <span>{language === 'fr' ? 'Afficher la Vue Alternative (Barres)' : 'Mostrar Vista Alternativa (Barras)'}</span>
                                     <svg className="w-4 h-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                 </summary>
                                 <div className="mt-6 h-48 w-full animate-in fade-in slide-in-from-top-4 duration-500 ease-out">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={weeklyData}>
+                                        <BarChart data={weeklyData} barSize={20}>
                                             <defs>
-                                                <linearGradient id="colorSuccessClassic" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                                                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                                <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={1} />
+                                                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.4} />
                                                 </linearGradient>
                                             </defs>
                                             <Tooltip
-                                                cursor={{ stroke: 'rgba(139, 92, 246, 0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                                                cursor={{ fill: 'rgba(139, 92, 246, 0.1)' }}
                                                 contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(11, 15, 25, 0.8)', backdropFilter: 'blur(10px)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
                                                 itemStyle={{ color: '#a78bfa', fontWeight: 'bold' }}
                                                 labelStyle={{ color: '#cbd5e1' }}
                                                 formatter={(value: any) => [`${value}%`, dict.productivity]}
                                             />
-                                            <Area
-                                                type="monotone"
+                                            <Bar
                                                 dataKey="success"
-                                                stroke="#8b5cf6"
-                                                strokeWidth={5}
-                                                fillOpacity={1}
-                                                fill="url(#colorSuccessClassic)"
-                                                activeDot={{ r: 8, strokeWidth: 0, fill: '#7c3aed', style: { filter: 'drop-shadow(0px 4px 6px rgba(139, 92, 246, 0.4))' } }}
+                                                fill="url(#colorSuccess)"
+                                                radius={[8, 8, 8, 8]}
                                             />
-                                        </AreaChart>
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                             </details>
@@ -386,17 +397,17 @@ export default function Dashboard() {
                                             title={`Seleccionar color ${color}`}
                                             aria-label={`Color ${color}`}
                                             onClick={() => setNewHabitColor(color)}
-                                            className={`w-10 h-10 rounded-full ${color} transition-all active:scale-90 ${newHabitColor === color ? 'ring-4 ring-offset-2 ring-indigo-500 dark:ring-offset-[#151B2B]' : 'opacity-50 hover:opacity-100'}`}
+                                            className={`w-14 h-14 md:w-16 md:h-16 rounded-full ${color} transition-all active:scale-95 shadow-md ${newHabitColor === color ? 'ring-4 ring-offset-4 ring-indigo-500 dark:ring-offset-[#151B2B] scale-110' : 'opacity-60 hover:opacity-100 hover:scale-105'}`}
                                         />
                                     ))}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 mt-8">
+                        <div className="flex flex-col sm:flex-row justify-end gap-4 mt-10">
                             <button
                                 onClick={() => setIsAddModalOpen(false)}
-                                className="px-5 py-2.5 rounded-xl font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                             >
                                 Cancelar
                             </button>
@@ -413,7 +424,7 @@ export default function Dashboard() {
                                     }
                                 }}
                                 disabled={!newHabitName.trim()}
-                                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
+                                className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-lg rounded-2xl shadow-xl transition-all active:scale-95"
                             >
                                 Crear Hábito
                             </button>

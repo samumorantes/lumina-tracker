@@ -54,14 +54,22 @@ export async function getHabitCoachChatResponse(
         });
 
         if (!response.ok) {
-            throw new Error(`Error en la API del Coach`);
+            if (response.status === 401) {
+                return "Error 401: La clave API de OpenRouter configurada es inválida o no tiene fondos. Por favor, actualiza la variable de entorno NEXT_PUBLIC_AI_API_KEY.";
+            }
+            throw new Error(`Error en la API del Coach: ${response.statusText}`);
         }
 
         const data = await response.json();
+        
+        if (data.error) {
+           return `Error de IA: ${data.error.message}`;
+        }
+        
         return data.choices[0].message.content;
 
     } catch (error) {
         console.error("Coach de Hábitos (IA) falló:", error);
-        return null;
+        return "Hubo un problema de conexión con la IA. Revisa la consola o tu API key.";
     }
 }

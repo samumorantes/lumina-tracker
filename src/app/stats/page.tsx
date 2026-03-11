@@ -313,8 +313,27 @@ export default function StatsPage() {
                                                         </LineChart>
                                                     </ResponsiveContainer>
                                                 </div>
-                                                <div className="h-48 w-full bg-slate-50/50 dark:bg-[#080B13]/30 p-4 rounded-2xl border border-white/40 dark:border-white/5 border-dashed flex items-center justify-center">
-                                                    <p className="text-sm font-medium text-slate-400">Análisis Comparativo (En Desarrollo)</p>
+                                                <div className="h-48 w-full bg-slate-50/50 dark:bg-[#080B13]/30 p-4 rounded-2xl border border-white/40 dark:border-white/5 border-dashed">
+                                                    <p className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Frecuencia por Día de la Semana</p>
+                                                    <ResponsiveContainer width="100%" height="80%">
+                                                        <BarChart data={
+                                                            (() => {
+                                                                const daysOfWeekCount = [0, 0, 0, 0, 0, 0, 0];
+                                                                const dayNames = language === 'fr' 
+                                                                    ? ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'] 
+                                                                    : ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                                                                habit.completedDates.forEach(dateStr => {
+                                                                    const d = new Date(dateStr + 'T12:00:00');
+                                                                    daysOfWeekCount[d.getDay()]++;
+                                                                });
+                                                                return dayNames.map((name, i) => ({ name, count: daysOfWeekCount[i] }));
+                                                            })()
+                                                        }>
+                                                            <XAxis dataKey="name" stroke="transparent" tick={{ fill: '#94a3b8', fontSize: 10 }} dy={5} />
+                                                            <Tooltip cursor={{ fill: 'rgba(139, 92, 246, 0.1)' }} contentStyle={{ borderRadius: '12px', background: 'rgba(11, 15, 25, 0.9)', border: 'none' }} itemStyle={{ color: '#8b5cf6' }} />
+                                                            <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 4, 4]} />
+                                                        </BarChart>
+                                                    </ResponsiveContainer>
                                                 </div>
                                             </div>
 
