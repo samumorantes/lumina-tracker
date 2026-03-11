@@ -48,6 +48,29 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             });
         }
 
+        // --- NEW: Sync globalXp for Social View ---
+        const totalLogs = await prisma.habitLog.count({
+            where: {
+                habit: { userId: userId }
+            }
+        });
+
+        // Determine level based on totalLogs (same logic as getLevelFromXP frontend)
+        let levelTitle = "NPC Base 😐";
+        if (totalLogs >= 60) levelTitle = "Gigachad Supremo 🚀";
+        else if (totalLogs >= 30) levelTitle = "Looksmaxxer Letal 🤫🧏‍♂️";
+        else if (totalLogs >= 15) levelTitle = "Chad Respetable 🗿";
+        else if (totalLogs >= 5) levelTitle = "Sigma En Proceso 🍷";
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { 
+                globalXp: totalLogs,
+                levelTitle: levelTitle
+            }
+        });
+        // -----------------------------------------
+
         return NextResponse.json({ message: "Actualizado correctamente" });
     } catch (error) {
         console.error("Error Actualizando Hábito:", error);
