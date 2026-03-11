@@ -54,8 +54,8 @@ export default function BottomNav() {
             )}
 
             {/* Bottom Navigation Bar (Mobile) */}
-            <nav className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-safe pt-2 bg-white/70 dark:bg-[#080B13]/80 backdrop-blur-2xl border-t border-white/40 dark:border-white/5 shadow-[0_-8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_-5px_30px_rgba(0,0,0,0.5)] md:hidden transition-colors duration-500">
-                <ul className="flex items-center justify-around h-16">
+            <nav className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-6 pt-3 bg-white/70 dark:bg-[#080B13]/80 backdrop-blur-2xl border-t border-white/40 dark:border-white/5 shadow-[0_-8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_-5px_30px_rgba(0,0,0,0.5)] md:hidden transition-colors duration-500">
+                <ul className="flex items-center justify-around h-[72px]">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         const Icon = item.icon;

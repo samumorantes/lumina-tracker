@@ -12,8 +12,7 @@ import Link from 'next/link';
 import { Sparkles, ArrowRight, LogOut } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-// Placeholder for COLORS, assuming it's an array of color strings
-const COLORS = ['bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-green-500', 'bg-yellow-500'];
+const COLORS = ['bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-green-500', 'bg-yellow-500', 'bg-cyan-500', 'bg-rose-500'];
 
 export default function Dashboard() {
     const { data: session, status } = useSession();
@@ -202,9 +201,9 @@ export default function Dashboard() {
                                     </div>
                                 </div>
 
-                                {/* Heatmap Mini - AHORA INTERACTIVO */}
-                                <div className="flex items-center gap-2">
-                                    {[4, 3, 2, 1, 0].map((daysAgo) => {
+                                {/* Heatmap Mini - AHORA INTERACTIVO (7 Días) */}
+                                <div className="flex items-center gap-1.5 md:gap-2">
+                                    {[6, 5, 4, 3, 2, 1, 0].map((daysAgo) => {
                                         const dateOfCell = format(subDays(new Date(), daysAgo), 'yyyy-MM-dd');
                                         const isDone = habit.completedDates.includes(dateOfCell);
 
@@ -213,12 +212,12 @@ export default function Dashboard() {
                                                 key={daysAgo}
                                                 onClick={() => handleToggle(habit.id, dateOfCell)}
                                                 title={format(subDays(new Date(), daysAgo), "dd MMM", { locale: localeObj })}
-                                                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ease-out active:scale-75 hover:scale-110 cursor-pointer ${isDone
+                                                className={`w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center transition-all duration-300 ease-out active:scale-75 hover:scale-110 cursor-pointer ${isDone
                                                     ? habit.categoryColor + ' text-white shadow-sm scale-100 dark:shadow-[0_0_15px_rgba(255,255,255,0.1)]'
                                                     : 'bg-white/50 dark:bg-white/5 border border-white/60 dark:border-white/10 text-slate-300 dark:text-slate-500 scale-95 hover:bg-white/80 dark:hover:bg-white/10'
                                                     } backdrop-blur-md`}
                                             >
-                                                {isDone ? <span className="text-lg font-bold">✓</span> : ''}
+                                                {isDone ? <span className="text-sm md:text-lg font-bold">✓</span> : ''}
                                             </button>
                                         );
                                     })}
